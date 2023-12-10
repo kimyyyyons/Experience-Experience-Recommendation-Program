@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>문화정책 소개 앱</title>
+    <style>
+        /* page-loading */
+        #loading {
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          position: fixed;
+          display: block;
+          opacity: 0.6;
+          background: #e4e4e4;
+          z-index: 99;
+          text-align: center;
+        }
+    
+        #loading>img {
+          position: absolute;
+          top: 40%;
+          left: 45%;
+          z-index: 100;
+        }
+    
+        #loading>p {
+          position: absolute;
+          top: 57%;
+          left: 43%;
+          z-index: 101;
+        }
+      </style>
+      
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            height: 55px;
+            line-height: 55px;
+            /* 텍스트를 수직으로 가운데 정렬 */
+        }
+
+        .kakao-login-btn {
+            display: inline-block;
+            background-color: #f7e600;
+            color: #3c1e1e;
+            padding: 10px 20px;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .kakao-login-btn:hover {
+            background-color: #ffcf00;
+        }
+
+        h3 {
+            margin: 0;
+            /* 텍스트 주위의 여백을 제거 */
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            /* 메인을 플렉스로 설정 */
+            /* 세로 중앙 정렬 */
+            flex-direction: column;
+
+        }
+
+        section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-right: 20px;
+            /* 메인 오른쪽 여백 추가 */
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* 화면 가로, 세로 중앙 정렬 */
+            flex-direction: column;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label,
+        input,
+        select {
+            margin-bottom: 10px;
+            /* 각 입력 요소 사이에 간격 추가 */
+        }
+
+        .modal-btn {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .centered-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            /* 다른 요소 위에 나타나도록 설정 */
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 30px;
+            line-height: 30px;
+            /* 텍스트를 수직으로 가운데 정렬 */
+        }
+
+        footer nav {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        footer nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        footer nav ul li {
+            text-align: center;
+        }
+
+        footer nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        footer nav ul li a:hover {
+            background-color: #555;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .cell {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h3>정책 알림이</h3>
+    </header>
+    
+    <main id="mainContent">
+        
+        <a href="javascript:kakaoLogin();" class="kakao-login-btn">카카오톡 로그인</a>
+        <!-- Include Kakao SDK script -->
+
+    </main>
+
+    <footer>
+        <nav>
+            <ul>
+                <li><a href="main.html">홈</a></li>
+                <li><a href="submit.html">정책</a></li>
+                <li><a href="help.html"><img src="help-button.png" style="width: 30px; height: 30px;" ></a></li>
+                <li><a href="">설정</a></li>
+            </ul>
+        </nav>
+    </footer>
+    <input type="text" id="keywords" name="keywords" required />
+  <button onclick="chatGPT()">입력</button>
+  <div id="result"></div>
+
+  <div id="loading">
+    <img src="https://studentrights.sen.go.kr/images/common/loading.gif">
+  </div>
+  <script>
+    $(document).ready(function () {
+      $('#loading').hide();
+    });
+
+    function chatGPT() {
+      const api_key = ""  // <- API KEY 입력
+      const keywords = document.getElementById('keywords').value
+      $('#loading').show();
+
+      const messages = [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'user', content: keywords + '에 대하여 최대한 도움이 되는 답변을 해줘.' },
+      ]
+
+      const data = {
+        model: 'gpt-3.5-turbo',
+        temperature: 0.5,
+        n: 1,
+        messages: messages,
+      }
+
+      $.ajax({
+        url: "https://api.openai.com/v1/chat/completions",
+        method: 'POST',
+        headers: {
+          Authorization: "Bearer " + api_key,
+          'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(data),
+      }).then(function (response) {
+        $('#loading').hide();
+        console.log(response)
+        let result = document.getElementById('result')
+        let pre = document.createElement('pre')
+
+        pre.innerHTML = "\n\n" + response.choices[0].message.content
+        result.appendChild(pre)
+
+        document.getElementById('keywords').value = ''
+      });
+    }
+  </script>
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script>
+        
+        // Kakao SDK initialization
+        window.Kakao.init("2b9ef952a6268f3aa887a8d7ce0db1bd");
+        function kakaoLogin() {
+            window.Kakao.Auth.login({
+                scope: 'profile_nickname',
+                success: function (authObj) {
+                    console.log(authObj);
+                    window.Kakao.API.request({
+                        url: '/v2/user/me',
+                        success: function (res) {
+                            const kakao_account = res.kakao_account;
+                            console.log(kakao_account);
+
+                            const nickname = kakao_account.profile.nickname;
+                            window.location.href = 'main.html?nickname=' + encodeURIComponent(nickname);
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>
